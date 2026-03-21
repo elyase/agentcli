@@ -262,9 +262,6 @@ all = [
     { name = "pyyaml" },
     { name = "rich" },
 ]
-dev = [
-    { name = "ruff" },
-]
 mcp = [
     { name = "mcp" },
 ]
@@ -278,6 +275,11 @@ yaml = [
     { name = "pyyaml" },
 ]
 
+[package.dev-dependencies]
+dev = [
+    { name = "ruff" },
+]
+
 [package.metadata]
 requires-dist = [
     { name = "docstring-parser", specifier = ">=0.16" },
@@ -286,9 +288,11 @@ requires-dist = [
     { name = "pydantic", marker = "extra == 'pydantic'", specifier = ">=2.0" },
     { name = "pyyaml", marker = "extra == 'yaml'", specifier = ">=6.0" },
     { name = "rich", marker = "extra == 'rich'", specifier = ">=13.0" },
-    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.11" },
 ]
-provides-extras = ["rich", "pydantic", "yaml", "mcp", "all", "dev"]
+provides-extras = ["rich", "pydantic", "yaml", "mcp", "all"]
+
+[package.metadata.requires-dev]
+dev = [{ name = "ruff", specifier = ">=0.11" }]
 
 [[package]]
 name = "idna"
