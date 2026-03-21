@@ -24,7 +24,16 @@ Middleware = Callable[[Context, Callable[[], Any]], Any]
 
 
 class App:
-    def __init__(self, name: str, *, version: str | None = None, description: str | None = None, help_header: str | None = None, help_footer: str | None = None, autocorrect_threshold: int = 2) -> None:
+    def __init__(
+        self,
+        name: str,
+        *,
+        version: str | None = None,
+        description: str | None = None,
+        help_header: str | None = None,
+        help_footer: str | None = None,
+        autocorrect_threshold: int = 2,
+    ) -> None:
         self.name = name
         self.version = version
         self.description = description
@@ -36,10 +45,21 @@ class App:
         self.middleware: list[Middleware] = []
         self._default_command: CommandSchema | None = None
 
-    def command(self, func: Callable[..., Any] | None = None, *, name: str | None = None, output: type[Any] | None = None):
+    def command(
+        self,
+        func: Callable[..., Any] | None = None,
+        *,
+        name: str | None = None,
+        output: type[Any] | None = None,
+    ):
         def decorator(callback: Callable[..., Any]) -> Callable[..., Any]:
             command_name = name or command_name_for(callback.__name__)
-            self.commands[command_name] = build_command_schema(callback, name=command_name, full_path=(self.name, command_name), output_type=output)
+            self.commands[command_name] = build_command_schema(
+                callback,
+                name=command_name,
+                full_path=(self.name, command_name),
+                output_type=output,
+            )
             return callback
 
         return decorator if func is None else decorator(func)
@@ -51,7 +71,9 @@ class App:
     def mount(self, sub_app: App, name: str | None = None) -> None:
         self.subapps[name or sub_app.name] = sub_app
 
-    def default(self, func: Callable[..., Any] | None = None, *, output: type[Any] | None = None):
+    def default(
+        self, func: Callable[..., Any] | None = None, *, output: type[Any] | None = None
+    ):
         """Register the default command — runs when no sub-command is given.
 
         Can be used as a bare decorator (``@app.default``) or with options
@@ -59,18 +81,42 @@ class App:
         """
 
         def decorator(callback: Callable[..., Any]) -> Callable[..., Any]:
-            self._default_command = build_command_schema(callback, name=self.name, full_path=(self.name,), output_type=output)
+            self._default_command = build_command_schema(
+                callback, name=self.name, full_path=(self.name,), output_type=output
+            )
             return callback
 
         return decorator if func is None else decorator(func)
 
-    def _set_default(self, callback: Callable[..., Any], *, output: type[Any] | None = None) -> None:
+    def _set_default(
+        self, callback: Callable[..., Any], *, output: type[Any] | None = None
+    ) -> None:
         self.default(callback, output=output)
 
-    def invoke(self, *, argv: Iterable[str] | None = None, env: dict[str, str] | None = None, is_tty: bool | None = None, stdin: Any = None, stdout: Any = None, stderr: Any = None) -> ExecutionResult:
-        return self.run(argv, env=env, tty=is_tty, stdin=stdin, stdout=stdout, stderr=stderr)
+    def invoke(
+        self,
+        *,
+        argv: Iterable[str] | None = None,
+        env: dict[str, str] | None = None,
+        is_tty: bool | None = None,
+        stdin: Any = None,
+        stdout: Any = None,
+        stderr: Any = None,
+    ) -> ExecutionResult:
+        return self.run(
+            argv, env=env, tty=is_tty, stdin=stdin, stdout=stdout, stderr=stderr
+        )
 
-    def run(self, argv: Iterable[str] | None = None, *, env: dict[str, str] | None = None, tty: bool | None = None, stdin: Any = None, stdout: Any = None, stderr: Any = None) -> ExecutionResult:
+    def run(
+        self,
+        argv: Iterable[str] | None = None,
+        *,
+        env: dict[str, str] | None = None,
+        tty: bool | None = None,
+        stdin: Any = None,
+        stdout: Any = None,
+        stderr: Any = None,
+    ) -> ExecutionResult:
         args = list(sys.argv[1:] if argv is None else argv)
         env_map = {**os.environ, **(env or {})}
         stdin = stdin or sys.stdin
@@ -85,25 +131,70 @@ class App:
             if builtins.version:
                 text = self.version or ""
                 _write(stdout, text)
-                return _finish(make_envelope(ok=True, command=self.name, format=output_format, data=text), stdout, output_format)
+                return _finish(
+                    make_envelope(
+                        ok=True, command=self.name, format=output_format, data=text
+                    ),
+                    stdout,
+                    output_format,
+                )
             if builtins.llms:
                 text = render_llms_index(self)
                 _write(stdout, text)
-                return _finish(make_envelope(ok=True, command=self.name, format=output_format, data=text), stdout, output_format)
+                return _finish(
+                    make_envelope(
+                        ok=True, command=self.name, format=output_format, data=text
+                    ),
+                    stdout,
+                    output_format,
+                )
             if builtins.llms_full:
                 text = render_llms_full(self)
                 _write(stdout, text)
-                return _finish(make_envelope(ok=True, command=self.name, format=output_format, data=text), stdout, output_format)
+                return _finish(
+                    make_envelope(
+                        ok=True, command=self.name, format=output_format, data=text
+                    ),
+                    stdout,
+                    output_format,
+                )
             if builtins.mcp:
                 start_mcp(self)
-                return _finish(make_envelope(ok=True, command=self.name, format=output_format, data=None), stdout, output_format)
+                return _finish(
+                    make_envelope(
+                        ok=True, command=self.name, format=output_format, data=None
+                    ),
+                    stdout,
+                    output_format,
+                )
             if builtins.help or command is None:
-                text = render_command_help(command) if command else render_app_help(app, path=_app_path(self, app))
+                text = (
+                    render_command_help(command)
+                    if command
+                    else render_app_help(app, path=_app_path(self, app))
+                )
                 _write(stdout, text)
-                return _finish(make_envelope(ok=True, command=" ".join(_app_path(self, app)), format=output_format, data=text), stdout, output_format)
+                return _finish(
+                    make_envelope(
+                        ok=True,
+                        command=" ".join(_app_path(self, app)),
+                        format=output_format,
+                        data=text,
+                    ),
+                    stdout,
+                    output_format,
+                )
             if builtins.wizard and not is_tty:
-                envelope = make_envelope(ok=True, command=command.command, format=output_format, data=wizard_schema(command))
-                _write(stdout, render_envelope(envelope, format=output_format, verbose=True))
+                envelope = make_envelope(
+                    ok=True,
+                    command=command.command,
+                    format=output_format,
+                    data=wizard_schema(command),
+                )
+                _write(
+                    stdout,
+                    render_envelope(envelope, format=output_format, verbose=True),
+                )
                 return _finish(envelope, stdout, output_format)
             values = parse_values(
                 remainder,
@@ -119,23 +210,58 @@ class App:
             if builtins.wizard and is_tty:
                 for parameter in command.all_parameters:
                     if values.get(parameter.name, MISSING) is MISSING:
-                        values[parameter.name] = prompt_for_parameter(parameter, stdin=stdin, stdout=stdout)
-            context = Context(self.name, command.path, output_format, detect_agent_mode(stdin=stdin, stdout=stdout, env=env_map), args, env_map, {}, {}, {})
+                        values[parameter.name] = prompt_for_parameter(
+                            parameter, stdin=stdin, stdout=stdout
+                        )
+            context = Context(
+                self.name,
+                command.path,
+                output_format,
+                detect_agent_mode(stdin=stdin, stdout=stdout, env=env_map),
+                args,
+                env_map,
+                {},
+                {},
+                {},
+            )
             if command.context_parameter:
                 values[command.context_parameter] = context
-            envelope, streamed = asyncio.run(self._execute(command, values, context=context, middlewares=middlewares, stdout=stdout, format=output_format))
+            envelope, streamed = asyncio.run(
+                self._execute(
+                    command,
+                    values,
+                    context=context,
+                    middlewares=middlewares,
+                    stdout=stdout,
+                    format=output_format,
+                )
+            )
             if envelope.meta:
                 envelope.meta.duration_ms = (time.perf_counter() - started) * 1000
-            rendered = render_envelope(envelope, format=output_format, verbose=builtins.verbose or not envelope.ok)
+            rendered = render_envelope(
+                envelope,
+                format=output_format,
+                verbose=builtins.verbose or not envelope.ok,
+            )
             if not streamed or builtins.verbose:
                 _write(stdout, rendered)
             return _finish(envelope, stdout, output_format, streamed)
         except Exception as error:  # noqa: BLE001
             agent_error = normalize_exception(error)
-            envelope = make_envelope(ok=False, command=self.name, format=output_format, error=agent_error.to_error_info(), duration_ms=(time.perf_counter() - started) * 1000)
+            envelope = make_envelope(
+                ok=False,
+                command=self.name,
+                format=output_format,
+                error=agent_error.to_error_info(),
+                duration_ms=(time.perf_counter() - started) * 1000,
+            )
             target = stderr if stderr is not None else stdout
-            _write(target, render_envelope(envelope, format=output_format, verbose=True))
-            return ExecutionResult(agent_error.exit_code, envelope, _buffer(stdout, stderr), output_format)
+            _write(
+                target, render_envelope(envelope, format=output_format, verbose=True)
+            )
+            return ExecutionResult(
+                agent_error.exit_code, envelope, _buffer(stdout, stderr), output_format
+            )
 
     def __call__(self, argv: Iterable[str] | None = None) -> None:
         result = self.run(argv)
@@ -147,7 +273,9 @@ class App:
 
         return _TestClient(self)
 
-    def _resolve(self, argv: list[str]) -> tuple[App, CommandSchema | None, list[str], list[Middleware]]:
+    def _resolve(
+        self, argv: list[str]
+    ) -> tuple[App, CommandSchema | None, list[str], list[Middleware]]:
         current = self
         index = 0
         middlewares = list(self.middleware)
@@ -166,13 +294,26 @@ class App:
                 return current, command, argv[index + 1 :], middlewares
             if current._default_command is not None:
                 break
-            raise unknown_name_error(kind="command", value=token, choices=[*current.subapps.keys(), *current.commands.keys()])
+            raise unknown_name_error(
+                kind="command",
+                value=token,
+                choices=[*current.subapps.keys(), *current.commands.keys()],
+            )
         if current._default_command is not None:
             current._default_command.full_path = _app_path(self, current)
             return current, current._default_command, argv[index:], middlewares
         return current, None, argv[index:], middlewares
 
-    async def _execute(self, command: CommandSchema, values: dict[str, Any], *, context: Context, middlewares: list[Middleware], stdout: Any, format: OutputFormat) -> tuple[Any, list[Any]]:
+    async def _execute(
+        self,
+        command: CommandSchema,
+        values: dict[str, Any],
+        *,
+        context: Context,
+        middlewares: list[Middleware],
+        stdout: Any,
+        format: OutputFormat,
+    ) -> tuple[Any, list[Any]]:
         streamed: list[Any] = []
         cta: list[str] | None = None
 
@@ -184,15 +325,24 @@ class App:
             if inspect.isasyncgen(outcome):
                 async for item in outcome:
                     streamed.append(item)
-                    _write(stdout, render_stream_item(item, output_format=format, is_tty=False))
+                    _write(
+                        stdout,
+                        render_stream_item(item, output_format=format, is_tty=False),
+                    )
                 return None
             if inspect.isgenerator(outcome):
                 for item in outcome:
                     streamed.append(item)
-                    _write(stdout, render_stream_item(item, output_format=format, is_tty=False))
+                    _write(
+                        stdout,
+                        render_stream_item(item, output_format=format, is_tty=False),
+                    )
                 return None
             if isinstance(outcome, Result):
-                cta = [item.command if hasattr(item, "command") else str(item) for item in outcome.cta]
+                cta = [
+                    item.command if hasattr(item, "command") else str(item)
+                    for item in outcome.cta
+                ]
                 return outcome.data
             return outcome
 
@@ -218,12 +368,29 @@ class App:
         data = await dispatch(0)
         if streamed and data is None:
             data = streamed
-        envelope = make_envelope(ok=True, command=command.command, format=format, data=data, cta=cta, streamed=bool(streamed))
+        envelope = make_envelope(
+            ok=True,
+            command=command.command,
+            format=format,
+            data=data,
+            cta=cta,
+            streamed=bool(streamed),
+        )
         return envelope, streamed
 
 
-def run(func: Callable[..., Any], *, name: str | None = None, version: str | None = None, argv: list[str] | None = None) -> None:
-    app = App(name or command_name_for(func.__name__), version=version, description=inspect.getdoc(func))
+def run(
+    func: Callable[..., Any],
+    *,
+    name: str | None = None,
+    version: str | None = None,
+    argv: list[str] | None = None,
+) -> None:
+    app = App(
+        name or command_name_for(func.__name__),
+        version=version,
+        description=inspect.getdoc(func),
+    )
     app._set_default(func)
     app(argv)
 
@@ -257,5 +424,9 @@ def _buffer(stdout: Any, stderr: Any | None = None) -> str:
     return ""
 
 
-def _finish(envelope, stdout: Any, format: OutputFormat, streamed: list[Any] | None = None) -> ExecutionResult:
-    return ExecutionResult(0 if envelope.ok else 1, envelope, _buffer(stdout), format, streamed or [])
+def _finish(
+    envelope, stdout: Any, format: OutputFormat, streamed: list[Any] | None = None
+) -> ExecutionResult:
+    return ExecutionResult(
+        0 if envelope.ok else 1, envelope, _buffer(stdout), format, streamed or []
+    )

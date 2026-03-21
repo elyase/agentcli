@@ -38,12 +38,16 @@ def confirm(
     stdin: Any = None,
     stdout: Any = None,
 ) -> bool:
-    answer = text(
-        f"{message} [{'Y/n' if default else 'y/N'}]",
-        default="y" if default else "n",
-        stdin=stdin,
-        stdout=stdout,
-    ).strip().lower()
+    answer = (
+        text(
+            f"{message} [{'Y/n' if default else 'y/N'}]",
+            default="y" if default else "n",
+            stdin=stdin,
+            stdout=stdout,
+        )
+        .strip()
+        .lower()
+    )
     return answer in {"y", "yes", "true", "1"}
 
 

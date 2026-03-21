@@ -23,10 +23,14 @@ class AgentCliTests(unittest.TestCase):
         app = App("deploy")
 
         @app.command
-        def deploy(env: str, *, token: Annotated[str, Param(env="DEPLOY_TOKEN")]) -> dict[str, str]:
+        def deploy(
+            env: str, *, token: Annotated[str, Param(env="DEPLOY_TOKEN")]
+        ) -> dict[str, str]:
             return {"env": env, "token": token}
 
-        result = CliRunner(app).invoke(["deploy", "staging", "--json"], env={"DEPLOY_TOKEN": "secret"})
+        result = CliRunner(app).invoke(
+            ["deploy", "staging", "--json"], env={"DEPLOY_TOKEN": "secret"}
+        )
         self.assertEqual(result.data["token"], "secret")
 
     def test_missing_argument(self) -> None:
@@ -85,7 +89,9 @@ class AgentCliTests(unittest.TestCase):
 
         @app.command
         def run(
-            env: Annotated[Literal["staging", "production"], Param(help="Target environment")],
+            env: Annotated[
+                Literal["staging", "production"], Param(help="Target environment")
+            ],
             *,
             force: bool = False,
         ) -> dict[str, str]:
@@ -105,7 +111,6 @@ class AgentCliTests(unittest.TestCase):
         result = CliRunner(app).invoke(["run", "--json", "--verbose"])
         self.assertEqual(result.exit_code, 0)
         self.assertIn("deploy status", result.output)
-
 
     def test_default_command_bare_decorator(self) -> None:
         app = App("fetch", description="Fetch things")

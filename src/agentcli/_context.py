@@ -25,7 +25,9 @@ class Context:
         return " ".join(self.command_path)
 
 
-def detect_agent_mode(*, stdin: Any = None, stdout: Any = None, env: Mapping[str, str] | None = None) -> bool:
+def detect_agent_mode(
+    *, stdin: Any = None, stdout: Any = None, env: Mapping[str, str] | None = None
+) -> bool:
     environment = env or os.environ
     if environment.get("AGENTCLI_MODE"):
         return environment["AGENTCLI_MODE"].lower() == "agent"

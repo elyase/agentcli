@@ -66,8 +66,18 @@ def make_envelope(
     streamed: bool = False,
 ) -> Envelope:
     if ok:
-        return Envelope(ok=True, data=data, meta=Meta(command=command, cta=cta, duration_ms=duration_ms, streamed=streamed))
-    return Envelope(ok=False, error=error, meta=Meta(command=command, cta=cta, duration_ms=duration_ms, streamed=streamed))
+        return Envelope(
+            ok=True,
+            data=data,
+            meta=Meta(
+                command=command, cta=cta, duration_ms=duration_ms, streamed=streamed
+            ),
+        )
+    return Envelope(
+        ok=False,
+        error=error,
+        meta=Meta(command=command, cta=cta, duration_ms=duration_ms, streamed=streamed),
+    )
 
 
 def normalize_value(value: Any) -> Any:
@@ -116,7 +126,13 @@ def render_output(
     return render_toon(payload)
 
 
-def render_stream_item(item: Any, *, format_name: str | None = None, output_format: str | None = None, is_tty: bool | None = None) -> str:
+def render_stream_item(
+    item: Any,
+    *,
+    format_name: str | None = None,
+    output_format: str | None = None,
+    is_tty: bool | None = None,
+) -> str:
     format_name = output_format or format_name
     payload = normalize_value(item)
     if format_name == "jsonl":
@@ -129,7 +145,9 @@ def render_stream_item(item: Any, *, format_name: str | None = None, output_form
 
 
 def render_envelope(envelope: Envelope, *, format: str, verbose: bool = False) -> str:
-    return render_output(envelope, format_name=format, is_tty=(format == "human"), verbose=verbose)
+    return render_output(
+        envelope, format_name=format, is_tty=(format == "human"), verbose=verbose
+    )
 
 
 def render_plain(value: Any) -> str:
@@ -230,14 +248,20 @@ def _toon_scalar(value: Any) -> str:
 
 def render_markdown(value: Any) -> str:
     value = normalize_value(value)
-    if isinstance(value, list) and value and all(isinstance(item, dict) for item in value):
+    if (
+        isinstance(value, list)
+        and value
+        and all(isinstance(item, dict) for item in value)
+    ):
         headers = list(value[0].keys())
         lines = [
             f"| {' | '.join(headers)} |",
             f"| {' | '.join('---' for _ in headers)} |",
         ]
         for item in value:
-            lines.append(f"| {' | '.join(str(item.get(header, '')) for header in headers)} |")
+            lines.append(
+                f"| {' | '.join(str(item.get(header, '')) for header in headers)} |"
+            )
         return "\n".join(lines)
     if isinstance(value, dict):
         return "\n".join(f"- **{key}**: {item}" for key, item in value.items())

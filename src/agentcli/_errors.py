@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Iterable
+from typing import TYPE_CHECKING, Iterable
+
+if TYPE_CHECKING:
+    from ._output import ErrorInfo
 
 
 @dataclass(frozen=True)
@@ -126,7 +129,9 @@ def suggest_matches(
 def unknown_name_error(*, kind: str, value: str, choices: Iterable[str]) -> ParseError:
     suggestions = suggest_matches(value, choices)
     hint = f" Did you mean: {', '.join(suggestions)}?" if suggestions else ""
-    return ParseError(f'Unknown {kind} "{value}".{hint}', code=f"UNKNOWN_{kind.upper()}")
+    return ParseError(
+        f'Unknown {kind} "{value}".{hint}', code=f"UNKNOWN_{kind.upper()}"
+    )
 
 
 def normalize_exception(error: Exception) -> AgentCliError:

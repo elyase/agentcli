@@ -29,7 +29,9 @@ def render_command_help(command: CommandSchema) -> str:
     if command.positionals:
         lines.extend(["", "Arguments:"])
         lines.extend(_parameters(command.positionals))
-    visible_options = [parameter for parameter in command.options if not parameter.hidden]
+    visible_options = [
+        parameter for parameter in command.options if not parameter.hidden
+    ]
     if visible_options:
         lines.extend(["", "Options:"])
         lines.extend(_parameters(visible_options))
@@ -39,11 +41,17 @@ def render_command_help(command: CommandSchema) -> str:
 def _usage(command: CommandSchema) -> str:
     parts = []
     for parameter in command.positionals:
-        parts.append(f"<{parameter.name}>" if parameter.required else f"[{parameter.name}]")
+        parts.append(
+            f"<{parameter.name}>" if parameter.required else f"[{parameter.name}]"
+        )
     for parameter in command.options:
         if parameter.hidden:
             continue
-        parts.append(f"[--{parameter.cli_name}]" if parameter.is_bool else f"[--{parameter.cli_name} VALUE]")
+        parts.append(
+            f"[--{parameter.cli_name}]"
+            if parameter.is_bool
+            else f"[--{parameter.cli_name} VALUE]"
+        )
     return (" " + " ".join(parts)) if parts else ""
 
 

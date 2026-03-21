@@ -49,8 +49,14 @@ def extract_command_schema(
             else:
                 positional_names.append(parameter.name)
             continue
-        default = parameter.default if parameter.default is not inspect._empty else MISSING
-        help_text = metadata.help if metadata and metadata.help else descriptions.get(parameter.name)
+        default = (
+            parameter.default if parameter.default is not inspect._empty else MISSING
+        )
+        help_text = (
+            metadata.help
+            if metadata and metadata.help
+            else descriptions.get(parameter.name)
+        )
         spec = ParameterSpec(
             name=parameter.name,
             kind="option"

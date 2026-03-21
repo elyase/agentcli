@@ -34,15 +34,38 @@ def render_llms_index(app) -> str:
 def render_llms_full(app) -> str:
     commands = []
     for path, command in iter_commands(app):
-        commands.append({"command": " ".join(path), "description": command.description, "arguments": [parameter.name for parameter in command.positionals], "options": [parameter.cli_name for parameter in command.options if not parameter.hidden]})
-    return json.dumps({"name": app.name, "version": app.version, "description": app.description, "commands": commands}, indent=2)
+        commands.append(
+            {
+                "command": " ".join(path),
+                "description": command.description,
+                "arguments": [parameter.name for parameter in command.positionals],
+                "options": [
+                    parameter.cli_name
+                    for parameter in command.options
+                    if not parameter.hidden
+                ],
+            }
+        )
+    return json.dumps(
+        {
+            "name": app.name,
+            "version": app.version,
+            "description": app.description,
+            "commands": commands,
+        },
+        indent=2,
+    )
 
 
 def start_mcp(app) -> None:
     try:
         from mcp.server.fastmcp import FastMCP
     except ImportError as error:
-        raise AgentCliError("MISSING_DEPENDENCY", "MCP mode requires agentcli[mcp]", cta=["pip install agentcli[mcp]"]) from error
+        raise AgentCliError(
+            "MISSING_DEPENDENCY",
+            "MCP mode requires agentcli[mcp]",
+            cta=["pip install agentcli[mcp]"],
+        ) from error
 
     server = FastMCP(app.name)
     for path, command in iter_commands(app):
@@ -58,6 +81,13 @@ def start_mcp(app) -> None:
                 elif value not in (False, None):
                     argv.extend([flag, str(value)])
             result = app.run(argv, tty=False)
-            return json.dumps({"ok": result.envelope.ok, "data": result.envelope.data, "error": result.envelope.error}, default=str)
+            return json.dumps(
+                {
+                    "ok": result.envelope.ok,
+                    "data": result.envelope.data,
+                    "error": result.envelope.error,
+                },
+                default=str,
+            )
 
     server.run()

@@ -197,7 +197,9 @@ def parse_command(
                     if suggestions
                     else ""
                 )
-                raise ParseError(f'Unknown option "--{name}".{hint}', code="UNKNOWN_OPTION")
+                raise ParseError(
+                    f'Unknown option "--{name}".{hint}', code="UNKNOWN_OPTION"
+                )
             if negate:
                 if not spec.is_bool:
                     raise ParseError(
@@ -211,7 +213,9 @@ def parse_command(
                 raw_values[spec.name] = True
                 index += 1
                 continue
-            value = inline_value if has_inline else _next_value(argv, index, f"--{name}")
+            value = (
+                inline_value if has_inline else _next_value(argv, index, f"--{name}")
+            )
             _store_value(raw_values, spec, coerce_value(spec, value))
             index += 1 if has_inline else 2
             continue
@@ -221,7 +225,9 @@ def parse_command(
                 alias, value = short.split("=", 1)
                 spec = option_by_alias.get(alias)
                 if spec is None:
-                    raise ParseError(f'Unknown option "-{alias}"', code="UNKNOWN_OPTION")
+                    raise ParseError(
+                        f'Unknown option "-{alias}"', code="UNKNOWN_OPTION"
+                    )
                 _store_value(raw_values, spec, coerce_value(spec, value))
                 index += 1
                 continue
@@ -331,12 +337,16 @@ def _coerce_with_type(
         try:
             return int(str(value), 0)
         except ValueError as exc:
-            raise ValidationError(message=f"Invalid integer for {field_name}: {value}") from exc
+            raise ValidationError(
+                message=f"Invalid integer for {field_name}: {value}"
+            ) from exc
     if annotation is float:
         try:
             return float(str(value))
         except ValueError as exc:
-            raise ValidationError(message=f"Invalid float for {field_name}: {value}") from exc
+            raise ValidationError(
+                message=f"Invalid float for {field_name}: {value}"
+            ) from exc
     if annotation is bool:
         if isinstance(value, bool):
             return value
