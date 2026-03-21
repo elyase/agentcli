@@ -21,11 +21,11 @@ jobs:
           - task: format
             do_sync: true
             command: uv run --no-sync ruff format --check --diff src tests
-            sync_args: --no-install-project
+            sync_args: --no-install-project --group dev
           - task: ruff
             do_sync: true
             command: uv run --no-sync ruff check src tests --output-format=github
-            sync_args: --no-install-project
+            sync_args: --no-install-project --group dev
           - task: pytest
             do_sync: true
             command: uv run --no-sync python -m unittest discover tests -v
