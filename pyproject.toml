@@ -33,8 +33,8 @@ mcp = ["mcp>=1.0"]
 all = ["agentcli[rich,pydantic,yaml,mcp]"]
 
 [project.urls]
-Repository = "https://github.com/yasermp/agentcli"
-Issues = "https://github.com/yasermp/agentcli/issues"
+Repository = "https://github.com/elyase/agentcli"
+Issues = "https://github.com/elyase/agentcli/issues"
 
 [build-system]
 requires = ["uv_build>=0.9.7,<0.10.0"]
