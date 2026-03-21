@@ -3,10 +3,24 @@ name = "agentcli"
 version = "0.1.0"
 description = "Python CLIs for agents and humans"
 readme = "README.md"
+license = "MIT"
 authors = [
     { name = "Yaser Martinez Palenzuela", email = "yaser.martinez@gmail.com" }
 ]
-requires-python = ">=3.11, <3.14"
+requires-python = ">=3.11"
+keywords = ["cli", "agent", "llm", "ai", "command-line"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
 dependencies = [
     "docstring-parser>=0.16",
 ]
@@ -17,6 +31,10 @@ pydantic = ["pydantic>=2.0"]
 yaml = ["pyyaml>=6.0"]
 mcp = ["mcp>=1.0"]
 all = ["agentcli[rich,pydantic,yaml,mcp]"]
+
+[project.urls]
+Repository = "https://github.com/yasermp/agentcli"
+Issues = "https://github.com/yasermp/agentcli/issues"
 
 [build-system]
 requires = ["uv_build>=0.9.7,<0.10.0"]

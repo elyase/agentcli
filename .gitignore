@@ -11,3 +11,6 @@ wheels/
 
 # Reference materials (embedded repos)
 reference/
+
+# Internal design notes
+PLAN.md
