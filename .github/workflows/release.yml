@@ -71,7 +71,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/project/agentcli/
+      url: https://pypi.org/project/humancli/
     permissions:
       contents: read
       id-token: write

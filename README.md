@@ -7,7 +7,13 @@ agentcli builds command-line interfaces that produce structured, parseable outpu
 ## Install
 
 ```sh
-pip install agentcli
+pip install humancli
+```
+
+The package installs as `humancli` on PyPI but you import it as `agentcli`:
+
+```python
+from agentcli import App
 ```
 
 ## Quick start
@@ -123,11 +129,11 @@ Every agentcli app gets built-in flags for agent consumption:
 ## Optional extras
 
 ```sh
-pip install agentcli[rich]      # rich terminal formatting
-pip install agentcli[pydantic]  # pydantic model support
-pip install agentcli[yaml]      # yaml output format
-pip install agentcli[mcp]       # MCP server mode
-pip install agentcli[all]       # everything
+pip install humancli[rich]      # rich terminal formatting
+pip install humancli[pydantic]  # pydantic model support
+pip install humancli[yaml]      # yaml output format
+pip install humancli[mcp]       # MCP server mode
+pip install humancli[all]       # everything
 ```
 
 ## License

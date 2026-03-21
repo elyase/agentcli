@@ -3,45 +3,6 @@ revision = 3
 requires-python = ">=3.11"
 
 [[package]]
-name = "agentcli"
-version = "0.1.0"
-source = { editable = "." }
-dependencies = [
-    { name = "docstring-parser" },
-]
-
-[package.optional-dependencies]
-all = [
-    { name = "mcp" },
-    { name = "pydantic" },
-    { name = "pyyaml" },
-    { name = "rich" },
-]
-mcp = [
-    { name = "mcp" },
-]
-pydantic = [
-    { name = "pydantic" },
-]
-rich = [
-    { name = "rich" },
-]
-yaml = [
-    { name = "pyyaml" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "agentcli", extras = ["rich", "pydantic", "yaml", "mcp"], marker = "extra == 'all'" },
-    { name = "docstring-parser", specifier = ">=0.16" },
-    { name = "mcp", marker = "extra == 'mcp'", specifier = ">=1.0" },
-    { name = "pydantic", marker = "extra == 'pydantic'", specifier = ">=2.0" },
-    { name = "pyyaml", marker = "extra == 'yaml'", specifier = ">=6.0" },
-    { name = "rich", marker = "extra == 'rich'", specifier = ">=13.0" },
-]
-provides-extras = ["rich", "pydantic", "yaml", "mcp", "all"]
-
-[[package]]
 name = "annotated-types"
 version = "0.7.0"
 source = { registry = "https://pypi.org/simple" }
@@ -285,6 +246,45 @@ sdist = { url = "https://files.pythonhosted.org/packages/0f/4c/751061ffa58615a32
 wheels = [
     { url = "https://files.pythonhosted.org/packages/d2/fd/6668e5aec43ab844de6fc74927e155a3b37bf40d7c3790e49fc0406b6578/httpx_sse-0.4.3-py3-none-any.whl", hash = "sha256:0ac1c9fe3c0afad2e0ebb25a934a59f4c7823b60792691f779fad2c5568830fc", size = 8960, upload-time = "2025-10-10T21:48:21.158Z" },
 ]
+
+[[package]]
+name = "humancli"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "docstring-parser" },
+]
+
+[package.optional-dependencies]
+all = [
+    { name = "mcp" },
+    { name = "pydantic" },
+    { name = "pyyaml" },
+    { name = "rich" },
+]
+mcp = [
+    { name = "mcp" },
+]
+pydantic = [
+    { name = "pydantic" },
+]
+rich = [
+    { name = "rich" },
+]
+yaml = [
+    { name = "pyyaml" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "docstring-parser", specifier = ">=0.16" },
+    { name = "humancli", extras = ["rich", "pydantic", "yaml", "mcp"], marker = "extra == 'all'" },
+    { name = "mcp", marker = "extra == 'mcp'", specifier = ">=1.0" },
+    { name = "pydantic", marker = "extra == 'pydantic'", specifier = ">=2.0" },
+    { name = "pyyaml", marker = "extra == 'yaml'", specifier = ">=6.0" },
+    { name = "rich", marker = "extra == 'rich'", specifier = ">=13.0" },
+]
+provides-extras = ["rich", "pydantic", "yaml", "mcp", "all"]
 
 [[package]]
 name = "idna"
