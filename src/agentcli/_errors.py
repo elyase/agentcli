@@ -37,7 +37,7 @@ class AgentCliError(Exception):
             code=self.code,
             message=self.message,
             retryable=self.retryable,
-            cta=self.cta,
+            suggested_commands=self.cta,
         )
 
 

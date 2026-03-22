@@ -13,13 +13,13 @@ class ErrorInfo:
     code: str
     message: str
     retryable: bool = False
-    cta: list[str] | None = None
+    suggested_commands: list[str] | None = None
 
 
 @dataclass
 class Meta:
     command: str
-    cta: list[str] | None = None
+    suggested_commands: list[str] | None = None
     duration_ms: float | None = None
     streamed: bool = False
 
@@ -38,7 +38,9 @@ def make_success_envelope(
     command: str,
     cta: list[str] | None = None,
 ) -> Envelope:
-    return Envelope(ok=True, data=data, meta=Meta(command=command, cta=cta))
+    return Envelope(
+        ok=True, data=data, meta=Meta(command=command, suggested_commands=cta)
+    )
 
 
 def make_error_envelope(error: Exception, *, command: str) -> Envelope:
@@ -47,11 +49,15 @@ def make_error_envelope(error: Exception, *, command: str) -> Envelope:
             code=error.code,
             message=error.message,
             retryable=error.retryable,
-            cta=error.cta,
+            suggested_commands=error.cta,
         )
     else:
         info = ErrorInfo(code="UNKNOWN", message=str(error), retryable=False)
-    return Envelope(ok=False, error=info, meta=Meta(command=command, cta=info.cta))
+    return Envelope(
+        ok=False,
+        error=info,
+        meta=Meta(command=command, suggested_commands=info.suggested_commands),
+    )
 
 
 def make_envelope(
@@ -70,13 +76,21 @@ def make_envelope(
             ok=True,
             data=data,
             meta=Meta(
-                command=command, cta=cta, duration_ms=duration_ms, streamed=streamed
+                command=command,
+                suggested_commands=cta,
+                duration_ms=duration_ms,
+                streamed=streamed,
             ),
         )
     return Envelope(
         ok=False,
         error=error,
-        meta=Meta(command=command, cta=cta, duration_ms=duration_ms, streamed=streamed),
+        meta=Meta(
+            command=command,
+            suggested_commands=cta,
+            duration_ms=duration_ms,
+            streamed=streamed,
+        ),
     )
 
 
