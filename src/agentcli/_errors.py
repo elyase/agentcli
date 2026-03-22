@@ -31,13 +31,13 @@ class AgentCliError(Exception):
         self.exit_code = exit_code
 
     def to_error_info(self) -> ErrorInfo:
-        from ._output import ErrorInfo
+        from ._output import ErrorInfo, _make_cta
 
         return ErrorInfo(
             code=self.code,
             message=self.message,
             retryable=self.retryable,
-            suggested_commands=self.cta,
+            cta=_make_cta(self.cta, description="To fix this:"),
         )
 
 

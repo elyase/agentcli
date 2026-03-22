@@ -2,10 +2,16 @@ from __future__ import annotations
 
 import dataclasses
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
 from ._errors import AgentCliError
+
+
+@dataclass(frozen=True)
+class CtaBlock:
+    description: str = "Suggested commands:"
+    commands: list[str] = field(default_factory=list)
 
 
 @dataclass(frozen=True)
@@ -13,13 +19,13 @@ class ErrorInfo:
     code: str
     message: str
     retryable: bool = False
-    suggested_commands: list[str] | None = None
+    cta: CtaBlock | None = None
 
 
 @dataclass
 class Meta:
     command: str
-    suggested_commands: list[str] | None = None
+    cta: CtaBlock | None = None
     duration_ms: float | None = None
     streamed: bool = False
 
@@ -32,32 +38,35 @@ class Envelope:
     meta: Meta | None = None
 
 
+def _make_cta(
+    commands: list[str] | None, description: str = "Suggested commands:"
+) -> CtaBlock | None:
+    if not commands:
+        return None
+    return CtaBlock(description=description, commands=commands)
+
+
 def make_success_envelope(
     data: Any,
     *,
     command: str,
     cta: list[str] | None = None,
 ) -> Envelope:
-    return Envelope(
-        ok=True, data=data, meta=Meta(command=command, suggested_commands=cta)
-    )
+    return Envelope(ok=True, data=data, meta=Meta(command=command, cta=_make_cta(cta)))
 
 
 def make_error_envelope(error: Exception, *, command: str) -> Envelope:
     if isinstance(error, AgentCliError):
+        cta_block = _make_cta(error.cta, description="To fix this:")
         info = ErrorInfo(
             code=error.code,
             message=error.message,
             retryable=error.retryable,
-            suggested_commands=error.cta,
+            cta=cta_block,
         )
     else:
         info = ErrorInfo(code="UNKNOWN", message=str(error), retryable=False)
-    return Envelope(
-        ok=False,
-        error=info,
-        meta=Meta(command=command, suggested_commands=info.suggested_commands),
-    )
+    return Envelope(ok=False, error=info, meta=Meta(command=command, cta=info.cta))
 
 
 def make_envelope(
@@ -77,7 +86,7 @@ def make_envelope(
             data=data,
             meta=Meta(
                 command=command,
-                suggested_commands=cta,
+                cta=_make_cta(cta),
                 duration_ms=duration_ms,
                 streamed=streamed,
             ),
@@ -87,7 +96,7 @@ def make_envelope(
         error=error,
         meta=Meta(
             command=command,
-            suggested_commands=cta,
+            cta=_make_cta(cta),
             duration_ms=duration_ms,
             streamed=streamed,
         ),

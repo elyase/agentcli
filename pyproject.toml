@@ -1,6 +1,6 @@
 [project]
 name = "humancli"
-version = "0.2.0"
+version = "0.3.0"
 description = "Python CLIs for agents and humans"
 readme = "README.md"
 license = "MIT"

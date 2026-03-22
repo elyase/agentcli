@@ -5,7 +5,7 @@ from ._context import Context
 from ._errors import AgentCliError, ConfigError, ParseError, ValidationError
 from ._types import Param, Result
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
 __all__ = [
     "AgentCliError",
