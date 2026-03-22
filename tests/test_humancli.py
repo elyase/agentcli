@@ -3,8 +3,8 @@ from __future__ import annotations
 import unittest
 from typing import Annotated, Literal
 
-from agentcli import App, Context, Param, Result
-from agentcli.testing import CliRunner
+from humancli import App, Context, Param, Result
+from humancli.testing import CliRunner
 
 
 class AgentCliTests(unittest.TestCase):

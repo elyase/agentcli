@@ -36,7 +36,7 @@ jobs:
           project_version = pyproject['project']['version']
 
           init_version = None
-          init_path = Path('src') / 'agentcli' / '__init__.py'
+          init_path = Path('src') / 'humancli' / '__init__.py'
           if init_path.is_file():
             m = re.search(r'__version__\s*=\s*"([^"]+)"', init_path.read_text(encoding='utf-8'))
             if m:
@@ -46,7 +46,7 @@ jobs:
             raise SystemExit(f"Tag {tag!r} does not match pyproject version {project_version!r}")
           if init_version and init_version != project_version:
             raise SystemExit(
-              f"src/agentcli/__init__.py __version__ {init_version!r} does not match pyproject version {project_version!r}"
+              f"src/humancli/__init__.py __version__ {init_version!r} does not match pyproject version {project_version!r}"
             )
 
           print(f"OK: tag {tag!r} matches version {project_version!r}")

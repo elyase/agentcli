@@ -7,7 +7,7 @@ description: Prepare and ship an agentcli release. Use when asked to cut a relea
 
 ## Overview
 
-Prepare a tagged release that matches the GitHub Actions release workflow. The workflow requires the tag version to match both `pyproject.toml` and `src/agentcli/__init__.py`.
+Prepare a tagged release that matches the GitHub Actions release workflow. The workflow requires the tag version to match both `pyproject.toml` and `src/humancli/__init__.py`.
 
 ## Workflow
 
@@ -21,7 +21,7 @@ If the current version has a `.dev` suffix, assume the target release version is
 Update version strings to match the release tag:
 
 - `pyproject.toml`: `project.version = "<major.minor.patch>"`
-- `src/agentcli/__init__.py`: `__version__ = "<major.minor.patch>"`
+- `src/humancli/__init__.py`: `__version__ = "<major.minor.patch>"`
 - `uv.lock`: refresh so the root package version matches (run `uv lock` or `uv sync`).
 
 ### 3) Run checks
@@ -45,4 +45,4 @@ If you keep a dev version between releases, bump the minor version (reset patch 
 
 ## Notes
 
-- The release workflow checks that the tag matches `pyproject.toml` and `src/agentcli/__init__.py`.
+- The release workflow checks that the tag matches `pyproject.toml` and `src/humancli/__init__.py`.

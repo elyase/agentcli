@@ -10,10 +10,10 @@ agentcli builds command-line interfaces that produce structured, parseable outpu
 pip install humancli
 ```
 
-The package installs as `humancli` on PyPI but you import it as `agentcli`:
+The package installs as `humancli` on PyPI and you import it as `humancli`:
 
 ```python
-from agentcli import App
+from humancli import App
 ```
 
 ## Quick start
@@ -21,7 +21,7 @@ from agentcli import App
 ### Single function
 
 ```python
-from agentcli import run
+from humancli import run
 
 def greet(name: str):
     """Greet someone."""
@@ -47,7 +47,7 @@ $ greet --llms
 ### Multi-command app
 
 ```python
-from agentcli import App
+from humancli import App
 
 app = App("my-cli", version="1.0.0")
 
@@ -70,7 +70,7 @@ Parameters before `*` are positional arguments. Parameters after `*` are named o
 
 ```python
 from typing import Annotated, Literal
-from agentcli import App, Param
+from humancli import App, Param
 
 app = App("deploy-cli")
 
@@ -119,12 +119,12 @@ def fetch_cases(*, limit: int = 20):
 
 ## Agent discovery
 
-Every agentcli app gets built-in flags for agent consumption:
+Every humancli app gets built-in flags for agent consumption:
 
 - `--llms` — markdown command index
 - `--llms-full` — full JSON schema of all commands
 - `--json` / `--yaml` / `--jsonl` — structured output formats
-- `--mcp` — start as an MCP server (requires `agentcli[mcp]`)
+- `--mcp` — start as an MCP server (requires `humancli[mcp]`)
 
 ## Optional extras
 
